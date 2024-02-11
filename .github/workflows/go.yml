@@ -22,7 +22,7 @@ jobs:
         go-version: '1.21.4'
 
     - name: Build
-      run: CGO_ENABLED=0 GOOS=linux go build -o build/app.exe cmd/server/main.go
+      run: go build -o build/app.exe cmd/server/main.go
 
     - name: Release
       uses: softprops/action-gh-release@v1
