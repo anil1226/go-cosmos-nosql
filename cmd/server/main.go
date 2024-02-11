@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/anil1226/go-employee/internal/db"
+	"github.com/anil1226/go-employee/internal/employee"
+	transhttp "github.com/anil1226/go-employee/internal/transport/http"
 )
 
 func main() {
@@ -19,14 +21,12 @@ func Run() error {
 		return err
 	}
 
-	emp, err := db.ReadItem()
-	if err != nil {
+	serv := employee.NewService(db)
+	httpHandler := transhttp.NewHandler(serv)
+
+	if err = httpHandler.Serve(); err != nil {
 		return err
 	}
-	fmt.Printf("%+v", emp)
-	// if err = db.Ping(context.Background()); err != nil {
-	// 	return err
-	// }
 
 	return nil
 }
