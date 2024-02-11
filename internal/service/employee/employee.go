@@ -17,49 +17,43 @@ type Branch struct {
 	ZipCode int    `json:"zip"`
 }
 
-type Store interface {
+type EmpService struct {
+	EmpStore
+}
+
+type EmpStore interface {
 	GetEmployee(context.Context, string) (Employee, error)
 	CreateEmployee(context.Context, Employee) error
 	UpdateEmployee(context.Context, Employee) error
 	DeleteEmployee(context.Context, string) error
 }
 
-type Service struct {
-	Store
-}
-
-func NewService(store Store) *Service {
-	return &Service{
-		Store: store,
-	}
-}
-
-func (s *Service) GetEmployee(ctx context.Context, id string) (Employee, error) {
-	emp, err := s.Store.GetEmployee(ctx, id)
+func (s *EmpService) GetEmployee(ctx context.Context, id string) (Employee, error) {
+	emp, err := s.GetEmployee(ctx, id)
 	if err != nil {
 		return Employee{}, err
 	}
 	return emp, nil
 }
 
-func (s *Service) CreateEmployee(ctx context.Context, emp Employee) error {
-	err := s.Store.CreateEmployee(ctx, emp)
+func (s *EmpService) CreateEmployee(ctx context.Context, emp Employee) error {
+	err := s.CreateEmployee(ctx, emp)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *Service) UpdateEmployee(ctx context.Context, emp Employee) error {
-	err := s.Store.UpdateEmployee(ctx, emp)
+func (s *EmpService) UpdateEmployee(ctx context.Context, emp Employee) error {
+	err := s.UpdateEmployee(ctx, emp)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *Service) DeleteEmployee(ctx context.Context, id string) error {
-	err := s.Store.DeleteEmployee(ctx, id)
+func (s *EmpService) DeleteEmployee(ctx context.Context, id string) error {
+	err := s.DeleteEmployee(ctx, id)
 	if err != nil {
 		return err
 	}

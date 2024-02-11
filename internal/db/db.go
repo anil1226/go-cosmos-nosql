@@ -2,20 +2,23 @@ package db
 
 import (
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
+	"github.com/anil1226/go-employee/config"
 )
 
 type Database struct {
-	Client *azcosmos.ContainerClient
+	Client *azcosmos.DatabaseClient
 }
 
-const (
-	cosmosDbEndpoint = "https://goprac.documents.azure.com:443/"
-	cosmosDbKey      = "zqlVKJaKYP7jhvwPAfX91vWaXRYcvdJAVSRBkEgieC4JRWigIGDJ7ESRRBQWYn13uEeyCPiE1McNACDb6hiHmQ=="
-	dbName           = "goprac"
-	containerName    = "employees"
+var (
+	cosmosDbEndpoint = config.GetEnvKey("cosmosDbEndpoint")
+	cosmosDbKey      = config.GetEnvKey("cosmosDbKey")
+	dbName           = config.GetEnvKey("dbName")
+	containerEmp     = config.GetEnvKey("containerEmp")
+	containerUser    = config.GetEnvKey("containerUser")
 )
 
 func NewDatabase() (*Database, error) {
+
 	cred, err := azcosmos.NewKeyCredential(cosmosDbKey)
 	if err != nil {
 		return nil, err
@@ -30,11 +33,11 @@ func NewDatabase() (*Database, error) {
 		return nil, err
 	}
 
-	container, err := database.NewContainer(containerName)
-	if err != nil {
-		return nil, err
-	}
+	// container, err := database.NewContainer(containerName)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	return &Database{
-		Client: container,
+		Client: database,
 	}, nil
 }

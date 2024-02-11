@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/anil1226/go-employee/internal/employee"
+	"github.com/anil1226/go-employee/internal/service/employee"
 	"github.com/gorilla/mux"
 )
 

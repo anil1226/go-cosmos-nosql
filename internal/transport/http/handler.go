@@ -32,10 +32,10 @@ func NewHandler(service EmpService) *Handler {
 
 func (h *Handler) mapRoutes() {
 
-	h.Router.HandleFunc("/api/v1/employee", h.CreateEmployee).Methods("POST")
-	h.Router.HandleFunc("/api/v1/employee/{id}", h.GetEmployee).Methods("GET")
-	h.Router.HandleFunc("/api/v1/employee", h.UpdateEmployee).Methods("PUT")
-	h.Router.HandleFunc("/api/v1/employee/{id}", h.DeleteEmployee).Methods("DELETE")
+	h.Router.HandleFunc("/api/v1/employee", h.CreateEmployee).Methods(http.MethodPost)
+	h.Router.HandleFunc("/api/v1/employee/{id}", h.GetEmployee).Methods(http.MethodGet)
+	h.Router.HandleFunc("/api/v1/employee", h.UpdateEmployee).Methods(http.MethodPut)
+	h.Router.HandleFunc("/api/v1/employee/{id}", h.DeleteEmployee).Methods(http.MethodDelete)
 }
 
 func (h *Handler) Serve() error {
