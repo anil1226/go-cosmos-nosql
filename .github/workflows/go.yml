@@ -24,9 +24,7 @@ jobs:
     - name: Build
       run: CGO_ENABLED=0 GOOS=linux go build -o app cmd/server/main.go
 
-    - run: mkdir -p /artifact
-    - run: echo hello > /artifact/app
     - uses: actions/upload-artifact@v4
       with:
         name: my-artifact
-        path: /artifact/app
+        path: /app
