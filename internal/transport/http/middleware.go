@@ -1,9 +1,7 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/anil1226/go-employee/config"
@@ -12,57 +10,48 @@ import (
 
 var sampleSecretKey = []byte(config.GetEnvKey("JWTSECRET"))
 
-func GenerateJWT() (string, error) {
+type Claims struct {
+	Username string `json:"username"`
+	jwt.StandardClaims
+}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"foo": "bar",
-		"nbf": time.Now().Add(10 * time.Minute),
-	})
+func GenerateJWT(username string) (string, error) {
 
+	// Create JWT token
+	expirationTime := time.Now().Add(10 * time.Minute)
+	claims := &Claims{
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(sampleSecretKey)
-
 	if err != nil {
 		return "", err
 	}
-
+	// Send token in response
 	return tokenString, nil
 }
 
 func verifyJWT(endpointHandler func(w http.ResponseWriter, req *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		authToken := r.Header.Get("Authorization")
-		tokenParts := strings.Split(authToken, " ")
-		var token *jwt.Token
-		var err error
-		if len(tokenParts) > 0 {
-			token, err = jwt.Parse(tokenParts[1], func(token *jwt.Token) (interface{}, error) {
-				return sampleSecretKey, nil
-			})
-		} else if len(tokenParts) == 0 {
-			token, err = jwt.Parse(tokenParts[0], func(token *jwt.Token) (interface{}, error) {
-				return sampleSecretKey, nil
-			})
-		}
-
-		if token.Valid {
-			fmt.Println("You look nice today")
-			endpointHandler(w, r)
-		} else if ve, ok := err.(*jwt.ValidationError); ok {
-
-			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				fmt.Println("That's not even a token")
-			} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-				// Token is either expired or not active yet
-				fmt.Println("Timing is everything")
-			} else {
-				fmt.Println("Couldn't handle this token:", err)
-			}
-			http.Error(w, "not authorized", http.StatusUnauthorized)
-			return
-		} else {
-			fmt.Println("Couldn't handle this token:", err)
-			http.Error(w, "not authorized", http.StatusUnauthorized)
+		// authToken := r.Header.Get("Authorization")
+		// tokenParts := strings.Split(authToken, " ")
+		// var token *jwt.Token
+		tokenString := r.Header.Get("Authorization")
+		if tokenString == "" {
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
+
+		token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+			return sampleSecretKey, nil
+		})
+		if err != nil || !token.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		endpointHandler(w, r)
 	}
 }

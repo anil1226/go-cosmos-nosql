@@ -34,9 +34,9 @@ func NewHandler(service *service.Service) *Handler {
 func (h *Handler) mapRoutes() {
 
 	h.Router.HandleFunc("/api/v1/employee", verifyJWT(h.CreateEmployee)).Methods(http.MethodPost)
-	h.Router.HandleFunc("/api/v1/employee/{id}", h.GetEmployee).Methods(http.MethodGet)
-	h.Router.HandleFunc("/api/v1/employee", h.UpdateEmployee).Methods(http.MethodPut)
-	h.Router.HandleFunc("/api/v1/employee/{id}", h.DeleteEmployee).Methods(http.MethodDelete)
+	h.Router.HandleFunc("/api/v1/employee/{id}", verifyJWT(h.GetEmployee)).Methods(http.MethodGet)
+	h.Router.HandleFunc("/api/v1/employee", verifyJWT(h.UpdateEmployee)).Methods(http.MethodPut)
+	h.Router.HandleFunc("/api/v1/employee/{id}", verifyJWT(h.DeleteEmployee)).Methods(http.MethodDelete)
 
 	h.Router.HandleFunc("/api/v1/user", h.CreateUser).Methods(http.MethodPost)
 	h.Router.HandleFunc("/api/v1/signin", h.GetUser).Methods(http.MethodPost)

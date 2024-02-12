@@ -51,7 +51,7 @@ func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := GenerateJWT()
+	token, err := GenerateJWT(cmt.Name)
 	if err != nil {
 		log.Print(err)
 		w.WriteHeader(http.StatusInternalServerError)
