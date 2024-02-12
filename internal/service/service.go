@@ -1,20 +1,12 @@
 package service
 
-import (
-	"github.com/anil1226/go-employee/internal/service/employee"
-	"github.com/anil1226/go-employee/internal/service/user"
-)
-
-type Store interface {
-	employee.EmpStore
-	user.UserStore
-}
+import "github.com/anil1226/go-employee/internal/db"
 
 type Service struct {
-	Store
+	db.Store
 }
 
-func NewService(store Store) *Service {
+func NewService(store db.Store) *Service {
 	return &Service{
 		Store: store,
 	}

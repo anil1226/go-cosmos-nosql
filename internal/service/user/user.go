@@ -2,32 +2,24 @@ package user
 
 import (
 	"context"
+
+	"github.com/anil1226/go-employee/internal/db"
+	"github.com/anil1226/go-employee/internal/models"
 )
 
-type User struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Password string `json:"password"`
-}
-
-type UserStore interface {
-	GetUser(context.Context, string) (User, error)
-	CreateUser(context.Context, User) error
-}
-
 type UserService struct {
-	UserStore
+	db.UserStore
 }
 
-func (s *UserService) GetUser(ctx context.Context, id string) (User, error) {
+func (s *UserService) GetUser(ctx context.Context, id string) (models.User, error) {
 	emp, err := s.GetUser(ctx, id)
 	if err != nil {
-		return User{}, err
+		return models.User{}, err
 	}
 	return emp, nil
 }
 
-func (s *UserService) CreateUser(ctx context.Context, emp User) error {
+func (s *UserService) CreateUser(ctx context.Context, emp models.User) error {
 	err := s.CreateUser(ctx, emp)
 	if err != nil {
 		return err

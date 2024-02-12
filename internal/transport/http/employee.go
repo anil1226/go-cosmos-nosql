@@ -6,14 +6,14 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/anil1226/go-employee/internal/service/employee"
+	"github.com/anil1226/go-employee/internal/models"
 	"github.com/gorilla/mux"
 )
 
 type EmpService interface {
-	GetEmployee(context.Context, string) (employee.Employee, error)
-	CreateEmployee(context.Context, employee.Employee) error
-	UpdateEmployee(context.Context, employee.Employee) error
+	GetEmployee(context.Context, string) (models.Employee, error)
+	CreateEmployee(context.Context, models.Employee) error
+	UpdateEmployee(context.Context, models.Employee) error
 	DeleteEmployee(context.Context, string) error
 }
 
@@ -22,7 +22,7 @@ type Response struct {
 }
 
 func (h *Handler) CreateEmployee(w http.ResponseWriter, r *http.Request) {
-	var postCmt employee.Employee
+	var postCmt models.Employee
 	if err := json.NewDecoder(r.Body).Decode(&postCmt); err != nil {
 		return
 	}
@@ -64,7 +64,7 @@ func (h *Handler) GetEmployee(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) UpdateEmployee(w http.ResponseWriter, r *http.Request) {
 
-	var cmt employee.Employee
+	var cmt models.Employee
 	if err := json.NewDecoder(r.Body).Decode(&cmt); err != nil {
 		return
 	}

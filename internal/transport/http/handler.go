@@ -8,16 +8,17 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/anil1226/go-employee/internal/service"
 	"github.com/gorilla/mux"
 )
 
 type Handler struct {
-	Service EmpService
+	Service *service.Service
 	Router  *mux.Router
 	Server  *http.Server
 }
 
-func NewHandler(service EmpService) *Handler {
+func NewHandler(service *service.Service) *Handler {
 	h := &Handler{
 		Service: service,
 	}
@@ -32,10 +33,13 @@ func NewHandler(service EmpService) *Handler {
 
 func (h *Handler) mapRoutes() {
 
-	h.Router.HandleFunc("/api/v1/employee", h.CreateEmployee).Methods(http.MethodPost)
+	h.Router.HandleFunc("/api/v1/employee", verifyJWT(h.CreateEmployee)).Methods(http.MethodPost)
 	h.Router.HandleFunc("/api/v1/employee/{id}", h.GetEmployee).Methods(http.MethodGet)
 	h.Router.HandleFunc("/api/v1/employee", h.UpdateEmployee).Methods(http.MethodPut)
 	h.Router.HandleFunc("/api/v1/employee/{id}", h.DeleteEmployee).Methods(http.MethodDelete)
+
+	h.Router.HandleFunc("/api/v1/user", h.CreateUser).Methods(http.MethodPost)
+	h.Router.HandleFunc("/api/v1/signin", h.GetUser).Methods(http.MethodPost)
 }
 
 func (h *Handler) Serve() error {

@@ -5,31 +5,31 @@ import (
 	"encoding/json"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
-	"github.com/anil1226/go-employee/internal/service/employee"
+	"github.com/anil1226/go-employee/internal/models"
 	uuid "github.com/satori/go.uuid"
 )
 
-func (d *Database) GetEmployee(ctx context.Context, id string) (employee.Employee, error) {
+func (d *Database) GetEmployee(ctx context.Context, id string) (models.Employee, error) {
 	contClient, err := d.GetContainerClient(containerEmp)
 	if err != nil {
-		return employee.Employee{}, err
+		return models.Employee{}, err
 	}
 	pk := azcosmos.NewPartitionKeyString(id)
 	// Read an item
 	itemResponse, err := contClient.ReadItem(ctx, pk, id, nil)
 	if err != nil {
-		return employee.Employee{}, err
+		return models.Employee{}, err
 	}
-	var itemResponseBody employee.Employee
+	var itemResponseBody models.Employee
 	err = json.Unmarshal(itemResponse.Value, &itemResponseBody)
 	if err != nil {
-		return employee.Employee{}, err
+		return models.Employee{}, err
 	}
 	return itemResponseBody, nil
 
 }
 
-func (d *Database) CreateEmployee(ctx context.Context, emp employee.Employee) error {
+func (d *Database) CreateEmployee(ctx context.Context, emp models.Employee) error {
 	contClient, err := d.GetContainerClient(containerEmp)
 	if err != nil {
 		return err
@@ -47,7 +47,7 @@ func (d *Database) CreateEmployee(ctx context.Context, emp employee.Employee) er
 	return nil
 }
 
-func (d *Database) UpdateEmployee(ctx context.Context, emp employee.Employee) error {
+func (d *Database) UpdateEmployee(ctx context.Context, emp models.Employee) error {
 	contClient, err := d.GetContainerClient(containerEmp)
 	if err != nil {
 		return err
