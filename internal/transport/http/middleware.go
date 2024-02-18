@@ -36,9 +36,7 @@ func GenerateJWT(username string) (string, error) {
 
 func verifyJWT(endpointHandler func(w http.ResponseWriter, req *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// authToken := r.Header.Get("Authorization")
-		// tokenParts := strings.Split(authToken, " ")
-		// var token *jwt.Token
+
 		tokenString := r.Header.Get("Authorization")
 		if tokenString == "" {
 			w.WriteHeader(http.StatusUnauthorized)

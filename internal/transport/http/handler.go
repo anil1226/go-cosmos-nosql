@@ -8,8 +8,10 @@ import (
 	"os/signal"
 	"time"
 
+	_ "github.com/anil1226/go-employee/docs"
 	"github.com/anil1226/go-employee/internal/service"
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
 type Handler struct {
@@ -31,7 +33,29 @@ func NewHandler(service *service.Service) *Handler {
 	return h
 }
 
+// @title Swagger Example API
+// @version 1.0
+// @description This is a sample server Petstore server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host petstore.swagger.io
+// @BasePath /v2
+
 func (h *Handler) mapRoutes() {
+
+	h.Router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), //The url pointing to API definition
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("swagger-ui"),
+	)).Methods(http.MethodGet)
 
 	h.Router.HandleFunc("/api/v1/employee", verifyJWT(h.CreateEmployee)).Methods(http.MethodPost)
 	h.Router.HandleFunc("/api/v1/employee/{id}", verifyJWT(h.GetEmployee)).Methods(http.MethodGet)

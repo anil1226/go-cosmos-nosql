@@ -33,6 +33,11 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// @Summary Returns a user json
+// @Description Returns a user json
+// @Produce json
+// @Success 200 {string} string "OK"
+// @Router /api/v1/signin [get]
 func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 	var postCmt models.User
 	if err := json.NewDecoder(r.Body).Decode(&postCmt); err != nil {

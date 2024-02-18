@@ -40,6 +40,11 @@ func (h *Handler) CreateEmployee(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// @Summary Returns a employee json
+// @Description Returns a employee json
+// @Produce json
+// @Success 200 {string} string "OK"
+// @Router /api/v1/employee/{id} [get]
 func (h *Handler) GetEmployee(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
